@@ -44,10 +44,6 @@ class Base64Decoder
         $this->format = (new MimeTypeExtensionGuesser())->guessExtension($format);
         $this->content = $parts[1] ?? '';
 
-        if(!preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $this->content)){
-            throw NotBase64Encoding::create();
-        }
-
         if(!in_array($this->format, $this->allowedFormats, true)){
             throw InvalidFormat::create($this->allowedFormats, $this->format);
         }
@@ -65,6 +61,10 @@ class Base64Decoder
 
     public function getDecodedContent(): string
     {
-        return base64_decode($this->content);
+        $content = base64_decode($this->content);
+        if($content === false){
+            throw NotBase64Encoding::create();
+        }
+        return $content;
     }
 }
