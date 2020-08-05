@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use PersiLiao\Base64Codec\Exceptions\CannotEncodeToBase64;
 use PersiLiao\Base64Codec\Exceptions\CannotReadFile;
 use PersiLiao\Base64Codec\Exceptions\InvalidFormat;
+use PersiLiao\Utils\MimeTypeExtensionGuesser;
 
 class Base64Encoder
 {
@@ -59,7 +60,7 @@ class Base64Encoder
      */
     private static function validate(string $mimeType, array $allowedFormats)
     {
-        $format = strtr($mimeType, [ 'image/' => '' ]);
+        $format = (new MimeTypeExtensionGuesser())->guessExtension($mimeType);
 
         if(!in_array($format, $allowedFormats, true)){
             throw InvalidFormat::create($allowedFormats, $format);

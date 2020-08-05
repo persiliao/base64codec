@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": ">=7.2",
+        "ext-fileinfo": "*",
         "persiliao/utils": "^0.1.0"
     },
     "autoload": {
