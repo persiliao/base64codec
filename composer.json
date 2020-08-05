@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "\\PersiLiao\\Base64Codec\\": "src/"
+            "PersiLiao\\Base64Codec\\": "src/"
         }
     }
 }
