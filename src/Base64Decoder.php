@@ -6,6 +6,7 @@ use PersiLiao\Base64Codec\Exceptions\InvalidFormat;
 use PersiLiao\Base64Codec\Exceptions\NotBase64Encoding;
 use PersiLiao\Utils\MimeTypeExtensionGuesser;
 use function str_replace;
+use function strlen;
 
 class Base64Decoder
 {
@@ -28,6 +29,11 @@ class Base64Decoder
      * @var string
      */
     private $content;
+
+    /**
+     * @var int
+     */
+    private $size = 0;
 
     public function __construct(string $base64Encoded, array $allowedFormats = [ 'jpeg', 'png', 'gif' ])
     {
@@ -65,6 +71,23 @@ class Base64Decoder
         if($content === false){
             throw NotBase64Encoding::create();
         }
+        $this->size = strlen($content);
         return $content;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllowedFormats(): array
+    {
+        return $this->allowedFormats;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize(): int
+    {
+        return $this->size;
     }
 }
