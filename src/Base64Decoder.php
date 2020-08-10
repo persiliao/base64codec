@@ -5,6 +5,7 @@ namespace PersiLiao\Base64Codec;
 use PersiLiao\Base64Codec\Exceptions\InvalidFormat;
 use PersiLiao\Base64Codec\Exceptions\NotBase64Encoding;
 use PersiLiao\Utils\MimeTypeExtensionGuesser;
+use function base64_decode;
 use function str_replace;
 use function strlen;
 
@@ -31,6 +32,11 @@ class Base64Decoder
     private $content;
 
     /**
+     * @var string
+     */
+    private $decodeContent;
+
+    /**
      * @var int
      */
     private $size = 0;
@@ -43,16 +49,28 @@ class Base64Decoder
         $this->validate();
     }
 
-    private function validate()
+    private function validate(): void
     {
         $parts = explode(',', $this->base64Encoded);
         $format = str_replace([ 'data:', ';', 'base64' ], [ '', '', '' ], $parts[0] ?? '');
         $this->format = (new MimeTypeExtensionGuesser())->guessExtension($format);
-        $this->content = $parts[1] ?? '';
+        $content = $parts[1] ?? '';
+
+        if(empty($content)){
+            throw NotBase64Encoding::create();
+        }
 
         if(!in_array($this->format, $this->allowedFormats, true)){
             throw InvalidFormat::create($this->allowedFormats, $this->format);
         }
+
+        $decodeContent = base64_decode($content);
+        if($decodeContent === false){
+            throw NotBase64Encoding::create();
+        }
+        $this->content = $content;
+        $this->decodeContent = $decodeContent;
+        $this->size = strlen($decodeContent);
     }
 
     public function getFormat(): string
@@ -67,12 +85,7 @@ class Base64Decoder
 
     public function getDecodedContent(): string
     {
-        $content = base64_decode($this->content);
-        if($content === false){
-            throw NotBase64Encoding::create();
-        }
-        $this->size = strlen($content);
-        return $content;
+        return $this->decodeContent;
     }
 
     /**
