@@ -12,7 +12,7 @@
     "require": {
         "php": ">=7.2",
         "ext-fileinfo": "*",
-        "persiliao/utils": "^0.2.0"
+        "persiliao/utils": "*"
     },
     "autoload": {
         "psr-4": {
